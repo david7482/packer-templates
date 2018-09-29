@@ -1,0 +1,9 @@
+---
+- name: set ssh authorized key
+  authorized_key:
+    user: '{{ ansible_ssh_user }}'
+    state: present
+    key: '{{ item }}'
+    exclusive: true
+  with_file:
+    - public.pub

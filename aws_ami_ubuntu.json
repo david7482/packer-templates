@@ -1,0 +1,59 @@
+{
+  "variables": {
+    "ami-name": "ubuntu-18.04-root-encryption-{{ isotime }}",
+    "username": "ubuntu"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "ami_name": "{{ user `ami-name` | clean_ami_name }}",
+      "region": "us-east-1",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
+          "root-device-type": "ebs"
+        },
+        "owners": [
+          "099720109477"
+        ],
+        "most_recent": true
+      },
+      "instance_type": "t3.micro",
+      "ssh_username": "{{ user `username` }}",
+      "encrypt_boot": true,
+      "tags": {
+        "Name": "{{ user `ami-name` | clean_ami_name }}"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-get update",
+        "sudo apt-get install -y software-properties-common wget unzip"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-add-repository -y ppa:ansible/ansible-2.7",
+        "sudo apt-get update",
+        "sudo apt-get install -y ansible"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "rm -f ~/.ssh/authorized_keys",
+        "sudo rm -f /root/.ssh/authorized_keys"
+      ]
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "ansible/main.yml",
+      "playbook_dir": "ansible"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+---
+- hosts: all
+  gather_facts: no # required in case Python is not available on the host
+  become: yes
+  become_user: root
+  pre_tasks:
+  - include_role:
+      name: install-ansible-prerequisites
+  roles:
+  - install-docker-ce
+  - install-pip
+  - install-awscli
+  - install-docker-py
+  - install-aws-chrony
+  - install-aws-ecr-helper
+  - install-ssh-public-key
+  - update-ulimit
+  - disable-auto-upgrade

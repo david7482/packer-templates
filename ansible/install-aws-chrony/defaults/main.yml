@@ -1,0 +1,4 @@
+---
+chrony_pkg_state: 'installed'
+chrony_service_state: 'started'
+chrony_service_enabled: 'yes'

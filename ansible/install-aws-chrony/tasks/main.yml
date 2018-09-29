@@ -1,0 +1,24 @@
+---
+- name: Add the OS specific variables
+  include_vars: '{{ ansible_os_family }}.yml'
+  tags: [ 'configuration', 'package', 'service', 'chrony' ]
+
+- name: Install the required packages in Redhat derivatives
+  yum: name=chrony state=installed
+  when: ansible_os_family == 'RedHat'
+  tags: [ 'package', 'chrony' ]
+
+- name: Install the required packages in Debian derivatives
+  apt: name=chrony state=present update_cache=yes cache_valid_time=86400
+  when: ansible_os_family == 'Debian'
+  tags: [ 'package', 'chrony' ]
+
+- name: Copy the chrony.conf template file
+  template: src=chrony.conf.j2 dest=/etc/chrony/chrony.conf
+  notify:
+  - restart chrony
+  tags: [ 'configuration', 'package', 'chrony' ]
+
+- name: Start/stop chrony service
+  service: name=chrony state=started enabled=yes pattern='/chrony'
+  tags: [ 'service', 'chrony' ]
