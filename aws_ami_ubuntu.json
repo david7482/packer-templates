@@ -32,6 +32,7 @@
       "type": "shell",
       "inline": [
         "sudo apt-get update",
+        "sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' dist-upgrade",
         "sudo apt-get install -y software-properties-common wget unzip"
       ]
     },
@@ -41,6 +42,19 @@
         "sudo apt-add-repository -y ppa:ansible/ansible-2.7",
         "sudo apt-get update",
         "sudo apt-get install -y ansible"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo snap refresh"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo /bin/su -c \"echo 'net.core.default_qdisc=fq' >> /etc/sysctl.conf\"",
+        "sudo /bin/su -c \"echo 'net.ipv4.tcp_congestion_control=bbr' >> /etc/sysctl.conf\""
       ]
     },
     {
