@@ -21,12 +21,24 @@
 
 - name: Install docker CE
   apt:
-    name: docker-ce=18.06.1~ce~3-0~ubuntu
+    name: '{{ packages }}'
     state: present
     update_cache: yes
+  vars:
+    packages:
+      - 'docker-ce=5:18.09.2~3-0~ubuntu-{{ ansible_distribution_release }}'
+      - 'docker-ce-cli=5:18.09.2~3-0~ubuntu-{{ ansible_distribution_release }}'
+      - containerd.io
 
 - name: Add users to the docker group
   user:
     name: '{{ ansible_ssh_user }}'
     groups: docker
     append: yes
+
+- name: Copy daemon.json to /etc/docker
+  template:
+    src: daemon.json
+    dest: '/etc/docker/daemon.json'
+    owner: 'root'
+    group: 'root'
